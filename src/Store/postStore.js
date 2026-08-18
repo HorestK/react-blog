@@ -1,17 +1,23 @@
 import {create} from 'zustand'
-import axios from "axios";
 import {ROUTES} from "../routes/Routes.js";
 import {generatePath} from "react-router-dom";
+import axios from "../axios.js";
+import {isAxiosError} from "axios";
 
 export const usePostStore = create((set, get) => ({
     posts: [],
     post: {
         category: {
+            id: '',
             name: ''
         },
         title: '',
         content: '',
-        tags: []
+        tags: [],
+        can: {
+            update: false,
+            delete: false,
+        }
     },
     tags: [],
     tag: {
@@ -29,7 +35,7 @@ export const usePostStore = create((set, get) => ({
     setTags: newTags => set(() => ({tags: newTags})),
     setTag: newTag => set(() => ({tag: newTag})),
     setErrors: newErrors => set(() => ({errors: newErrors})),
-    setNavigate: newNavigate => set(() => ({navigate: newNavigate})),
+    setPostNavigate: newNavigate => set(() => ({navigate: newNavigate})),
 
     handlePost: (e) => {
         const name = e.target.name
@@ -41,6 +47,7 @@ export const usePostStore = create((set, get) => ({
 
         get().setErrors(newErrors)
         get().setPost({...get().post, [name]: value})
+        if(name === 'category_id') return value
     },
     storePost: async (e) => {
         e.preventDefault()
@@ -54,20 +61,28 @@ export const usePostStore = create((set, get) => ({
         if(!dataToSend.category_id) dataToSend.category_id = 1
 
         get().setPost({...get().post, tags: get().tags})
-        console.log(get().post);
+        console.log(dataToSend);
         try{
-            const res = await axios.post('http://127.0.0.1:8000/api/posts', dataToSend)
+            axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+            axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            const res = await axios.post('http://localhost:8000/api/posts', dataToSend)
             // console.log(res)
             get().setPost({
                 category: {
-                    id: null,
+                    id: '',
                     name: ''
                 },
                 title: '',
                 content: '',
-                tags: []
+                tags: [],
+                can: {
+                    update: false,
+                    delete: false,
+                }
             })
             get().setTags([])
+            get().navigate(ROUTES.POST_INDEX)
         }
         catch (error){
             for(let [key, value] of Object.entries(error.response.data.errors)){
@@ -78,7 +93,7 @@ export const usePostStore = create((set, get) => ({
 
         // get().setPosts([...get().posts, get().post])
     },
-    updatePost: async (e, postId) => {
+    updatePost: async (e, postId, setError) => {
         e.preventDefault()
 
         const dataToSend = {
@@ -90,7 +105,10 @@ export const usePostStore = create((set, get) => ({
         let newErrors = []
 
         try{
-            const res = await axios.put(`http://127.0.0.1:8000/api/posts/${postId}`, dataToSend)
+            axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+            axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            const res = await axios.put(`http://localhost:8000/api/posts/${postId}`, dataToSend)
 
             get().setPost({
                 category: {
@@ -99,36 +117,57 @@ export const usePostStore = create((set, get) => ({
                 },
                 title: '',
                 content: '',
-                tags: []
+                tags: [],
+                can: {
+                    update: false,
+                    delete: false,
+                }
             })
             get().setTags([])
             get().navigate(generatePath(ROUTES.POST_SHOW, {id: postId}))
         }
         catch (error){
-            for(let [key, value] of Object.entries(error.response.data.errors)){
+            console.log(isAxiosError(error))
+            if(isAxiosError(error)) setError(true)
+            const data = error.response.data.errors ?? {}
+            for(let [key, value] of Object.entries(data)){
                 newErrors.push({name: key, body: value[0]})
             }
             get().setErrors(newErrors)
         }
     },
-    deletePost: async (postId) => {
+    deletePost: async (postId, setError) => {
         if(!confirm('Are you sure about it?')) return
 
-        const res = await axios.delete(`http://127.0.0.1:8000/api/posts/${postId}`)
+        try{
+            const res = await axios.delete(`http://localhost:8000/api/posts/${postId}`)
 
-        get().navigate(ROUTES.POST_INDEX)
+            get().navigate(ROUTES.POST_INDEX)
+        }catch(error){
+            setError(true)
+        }
     },
     getPosts: async (currentPage) => {
-        const res = await axios.get(ROUTES.HOST
-            + ROUTES.POST_INDEX + `?page=${currentPage}&per_page=5`)
-        get().setPostsMeta({
-            lastPage: res.data.meta.last_page
-        })
-        get().setPosts(res.data.data)
+        try{
+            const res = await axios.get(ROUTES.HOST
+                + ROUTES.POST_INDEX + `?page=${currentPage}&per_page=5`)
+            get().setPostsMeta({
+                lastPage: res.data.meta.last_page
+            })
+            get().setPosts(res.data.data)
+        }catch (error){
+            throw error
+        }
     },
     getPost: async (postId) => {
-        const res = await axios.get(`http://127.0.0.1:8000/api/posts/${postId}`)
-        get().setPost(res.data.data)
+        try{
+            axios.defaults.withCredentials = true;
+            const res = await axios.get(`http://localhost:8000/api/posts/${postId}`)
+            get().setPost(res.data.data)
+            get().setTags(res.data.data.tags)
+        }catch (error){
+            throw error
+        }
     },
 
     handleTag: (e) => {
@@ -140,7 +179,21 @@ export const usePostStore = create((set, get) => ({
     storeTag: (e) => {
         e.preventDefault()
 
-        get().setTags([...get().tags, get().tag])
+        const tagName = get().tag.name
+        console.log(!get().tags.some(t => t.name === tagName) || tagName !== '')
+        if(!get().tags.some(t => t.name === tagName) && tagName !== '') get().setTags([...get().tags, get().tag])
+        get().setTag({
+            name: '',
+        },)
+    },
+
+    deleteTag: (e) => {
+        e.preventDefault()
+        const tagName = get().tag.name
+
+        console.log(tagName);
+        console.log(get().tags.filter((t) => t.name !== tagName));
+        get().setTags(get().tags.filter((t) => t.name !== tagName))
         get().setTag({
             name: '',
         },)

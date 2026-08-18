@@ -1,8 +1,8 @@
 import Tag from "./Tag.jsx";
 
 export default function({post}){
-    return(
-        <div className='w-1/1 border border-gray-300 py-2 px-4 mb-4'>
+    return post === undefined ? false : (
+        <div className='w-full border border-gray-300 py-2 px-4 mb-4'>
             <h1 className='text-xl font-bold mb-2'>{post.title}</h1>
             <h2 className='text-xl mb-4'>{post.category.name}</h2>
             <p className='mb-4'>{post.content}</p>

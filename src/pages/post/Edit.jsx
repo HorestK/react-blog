@@ -1,8 +1,10 @@
-import {usePostStore} from "../Store/postStore.js";
-import Tag from "../components/Tag.jsx";
-import {useEffect} from "react";
-import {useCategoryStore} from "../Store/categoryStore.js";
+import {usePostStore} from "../../Store/postStore.js";
+import Tag from "../../components/Tag.jsx";
+import {useEffect, useState} from "react";
+import {useCategoryStore} from "../../Store/categoryStore.js";
 import {useParams} from "react-router-dom";
+import ServerError from "../../components/ServerError.jsx";
+import {ROUTES} from "../../routes/Routes.js";
 
 export default function Edit() {
     const {
@@ -12,22 +14,32 @@ export default function Edit() {
         updatePost,
         handleTag,
         storeTag,
+        deleteTag,
         tag,
         tags,
         errors
     } = usePostStore()
     const {getCategories, categories} = useCategoryStore()
     const {id} = useParams()
+    const [selectedCategory, setSelectedCategory] = useState(post.category.id)
+    const [Error, setError] = useState(false)
 
     useEffect(() => {
-        getPost(id)
-        getCategories()
-    }, []);
+        const load = async () => {
+            try{
+                await getPost(id)
+                await getCategories()
+            }catch (error){
+                setError(true)
+            }
+        }
+        load()
+    }, [Error]);
 
-    return (
-        <form className='border border-gray-400 flex flex-wrap p-5 gap-3'
+    return Error ? <ServerError setError={setError}/> : (
+        <form className='border border-gray-400 flex flex-wrap p-5 gap-3 lg:w-1/2 lg:mx-auto relative'
               onSubmit={(e) => {
-                  updatePost(e, id)
+                  updatePost(e, id, setError)
               }}
         >
             <input type='text'
@@ -52,9 +64,9 @@ export default function Edit() {
                 <select className='border border-gray-300 p-2'
                         name='category_id'
                         onChange={(e) => {
-                            handlePost(e)
+                            setSelectedCategory(handlePost(e))
                         }}
-                        value={post.category.id}
+                        value={selectedCategory}
                 >
                     {categories.map((c) => (
                         <option key={c.id} value={c.id}>{c.name}</option>
@@ -72,13 +84,21 @@ export default function Edit() {
                                handleTag(e)
                            }}
                     />
-                    <a className='bg-sky-600 text-white p-2 cursor-pointer'
+                    <a className='bg-sky-600 text-white p-2 cursor-pointer mr-5'
                        onClick={(e) => {
                            storeTag(e)
                        }}
                        href='#'
                        name='add'>
                         Add
+                    </a>
+                    <a className='bg-red-600 text-white p-2 cursor-pointer'
+                       onClick={(e) => {
+                           deleteTag(e)
+                       }}
+                       href='#'
+                       name='delete'>
+                        Delete
                     </a>
                 </div>
             </div>
@@ -89,8 +109,8 @@ export default function Edit() {
                         ))}
                     </div>
                 )
-                :(
-                    < div className = 'flex flex-wrap gap-2 w-1/1' >
+                : (
+                    < div className='flex flex-wrap gap-2 w-1/1'>
                         {
                             post.tags.map((t, i) => (
                                 <Tag key={i} name={t.name}/>
@@ -108,8 +128,14 @@ export default function Edit() {
             }
             <input type='submit'
                    value='Update'
-                   className='bg-sky-600 text-white p-2 cursor-pointer'
+                   className='bg-sky-600 text-white p-2 cursor-pointer '
             />
+            <button
+                className='cursor-pointer px-4 py-2 bg-sky-600 text-white absolute right-5 bottom-5'
+                onClick={() => navigate(ROUTES.POST_INDEX)}
+            >
+                Back
+            </button>
         </form>
     )
 }
