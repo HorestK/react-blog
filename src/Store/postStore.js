@@ -163,6 +163,7 @@ export const usePostStore = create((set, get) => ({
         try{
             axios.defaults.withCredentials = true;
             const res = await axios.get(`http://localhost:8000/api/posts/${postId}`)
+            console.log(res);
             get().setPost(res.data.data)
             get().setTags(res.data.data.tags)
         }catch (error){

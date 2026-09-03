@@ -18,7 +18,8 @@ export default function Create() {
         deleteTag,
         tags,
         tag,
-        errors
+        errors,
+        setTags
     } = usePostStore()
     const {getCategories, categories} = useCategoryStore()
     const [selectedCategory, setSelectedCategory] = useState(1)
@@ -28,6 +29,7 @@ export default function Create() {
     useEffect(() => {
         const load = async ()=>{
             try{
+                setTags([])
                 await getCategories()
             }catch (error){
                 setError(true)
