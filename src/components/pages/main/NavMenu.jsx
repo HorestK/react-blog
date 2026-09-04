@@ -11,7 +11,7 @@ export default function NavMenu({closeMenu}) {
             {/*<Link to={ROUTES.MAIN_INDEX} onClick={() => {closeMenu()}}>*/}
             {/*    <MenuItem name='Home'/>*/}
             {/*</Link>*/}
-            <Link to={ROUTES.POST_INDEX} onClick={() => {closeMenu()}}>
+            <Link to={ROUTES.POST_INDEX + '?page=1'} onClick={() => {closeMenu()}}>
                 <MenuItem name='Posts'/>
             </Link>
             {user.can.create &&

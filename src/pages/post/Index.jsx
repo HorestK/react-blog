@@ -11,10 +11,18 @@ export default function Index() {
     const page = +searchParams.get('page') || 1
     const [Error, setError] = useState(false)
 
+    let nextParams = new URLSearchParams(searchParams)
+    nextParams.set('page', (+page + 1))
+
+    let previousParams = new URLSearchParams(searchParams)
+    previousParams.set('page', (+page - 1))
+
+
     useEffect( () => {
         const load = async () => {
             try {
-                await getPosts(page, setError)
+                console.log('To string: ' + searchParams.toString())
+                await getPosts(setError, searchParams)
                 console.log(Error);
             }catch (error){
                 console.log('catched')
@@ -22,7 +30,7 @@ export default function Index() {
             }
         }
         load()
-    }, [page, Error]);
+    }, [searchParams.toString()]);
 
     return Error ? <ServerError setError={setError}/> : (
         <>
@@ -37,7 +45,8 @@ export default function Index() {
             </div>
             <footer className='bg-gray-500 min-h-20 fixed left-0 bottom-0 w-1/1 lg:relative lg:flex lg:justify-center lg:gap-x-[50%]'>
                 {page > 1 &&
-                    <Link to={`?page=${page - 1}`} className='absolute left-[5%] lg:left-[35%] bottom-2'>
+                    <Link to={'?' + previousParams}
+                          className='absolute left-[5%] lg:left-[35%] bottom-2'>
                         <span className='text-white text-7xl'>&lt;</span>
                     </Link>
                 }
@@ -47,7 +56,8 @@ export default function Index() {
                     </div>
                 </div>
                 {page < postsMeta.lastPage &&
-                    <Link to={`?page=${page + 1}`} className='absolute right-[5%] lg:right-[40%] bottom-2'>
+                    <Link to={'?' + nextParams}
+                          className='absolute right-[5%] lg:right-[40%] bottom-2'>
                         <span className='text-white text-7xl'>&gt;</span>
                     </Link>
                 }

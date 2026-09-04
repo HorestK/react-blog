@@ -16,12 +16,18 @@ import Edit from "./pages/post/Edit.jsx";
 import NavigationInitializer from "./components/NavigationInitializer.jsx";
 import Register from "./pages/user/Register.jsx";
 import Login from "./pages/user/Login.jsx";
+import SearсhButton from "./components/pages/main/SearchButton.jsx";
+import SearchMenu from "./components/pages/main/SearchMenu.jsx";
 
 function App() {
     const [isMenu, setIsMenu] = useState(false)
+    const [isSearchMenu, setIsSearchMenu] = useState(false)
 
     const showHamburgerMenu = function () {
-        if (!isMenu) setIsMenu(true)
+        if (!isMenu) {
+            setIsSearchMenu(false)
+            setIsMenu(true)
+        }
         else setIsMenu(false)
     }
 
@@ -29,15 +35,36 @@ function App() {
         if (isMenu) setIsMenu(false)
     }
 
+
+    //реализовали открытие и закрытие меню
+    //не забываем реализовать закрытие прошлого меню если оно открыто
+    const showSearchMenu = function () {
+        if (!isSearchMenu) {
+            setIsMenu(false)
+            setIsSearchMenu(true)
+        }
+        else setIsSearchMenu(false)
+    }
+
+    const closeSearchMenu = function () {
+        if (isSearchMenu) setIsSearchMenu(false)
+    }
+
     return (
         <Router>
             <NavigationInitializer/>
             <header className='flex justify-between bg-gray-500 min-h-20 px-4 fixed left-0 top-0 w-1/1 z-50'>
                 <span className='text-white text-2xl flex items-center'>BLOG FOR EVERYTHING</span>
-                <MenuButton showMenu={() => {
-                    showHamburgerMenu()
-                }}/>
+                <div className='pt-2'>
+                    <SearсhButton showMenu={() => {
+                        showSearchMenu()
+                    }}/>
+                    <MenuButton showMenu={() => {
+                        showHamburgerMenu()
+                    }}/>
+                </div>
                 {isMenu && <NavMenu closeMenu={() => {closeHamburgerMenu()}}/>}
+                {isSearchMenu && <SearchMenu closeMenu={() => {closeSearchMenu()}}/>}
             </header>
             <main className='px-4 py-2 mt-20'>
                 <Routes>
