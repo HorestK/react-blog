@@ -147,10 +147,31 @@ export const usePostStore = create((set, get) => ({
             setError(true)
         }
     },
-    getPosts: async (currentPage) => {
+    getPosts: async (
+        setErrors,
+        searchParams,
+        ) => {
         try{
-            const res = await axios.get(ROUTES.HOST
-                + ROUTES.POST_INDEX + `?page=${currentPage}&per_page=5`)
+            /*
+            1. Получаем параметры с url
+            2. Заполняем этими параметрами url на который я буду делать запрос на сервер
+             */
+            const currentPage = +searchParams.get('page') || 1
+
+            console.log(JSON.stringify( searchParams ));
+            const allParams = Object.fromEntries([...searchParams])
+            console.log(JSON.stringify( allParams ));
+
+            let mainURL = ROUTES.HOST + ROUTES.POST_INDEX + '?'
+            let paramsForURL = ''
+            Object.entries(allParams).forEach( ([key, value]) => {
+                paramsForURL += key + '=' + value + '&'
+                console.log('Cicle: ' + paramsForURL);
+            })
+            console.log(paramsForURL);
+            mainURL += paramsForURL + `page=${currentPage}&per_page=5`
+
+            const res = await axios.get(mainURL)
             get().setPostsMeta({
                 lastPage: res.data.meta.last_page
             })
