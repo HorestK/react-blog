@@ -1,14 +1,10 @@
 import {create} from 'zustand'
-import axios from "../axios.js";
-import {ROUTES} from "../routes/Routes.js";
-import {generatePath} from "react-router-dom";
 
 export const usePostFilterStore = create( (set, get) => ({
     postFilter: {
         title: '',
         content: '',
-        category: '',
-        user_name: '',
+        category_id: '',
     },
 
     setPostFilter: newPostFilter => set( () => ({postFilter: newPostFilter}) ),
@@ -17,9 +13,9 @@ export const usePostFilterStore = create( (set, get) => ({
         const name = e.target.name;
         const value = e.target.value;
 
-        // console.log('name: ' + name + '; value: ' + value)
-
         get().setPostFilter({...get().postFilter, [name]: value})
+
+        if(name === 'category_id') return value
     },
 
     setPostFilterOnURL: async (
