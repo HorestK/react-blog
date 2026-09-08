@@ -152,23 +152,22 @@ export const usePostStore = create((set, get) => ({
         searchParams,
         ) => {
         try{
-            /*
-            1. Получаем параметры с url
-            2. Заполняем этими параметрами url на который я буду делать запрос на сервер
-             */
             const currentPage = +searchParams.get('page') || 1
 
-            console.log(JSON.stringify( searchParams ));
             const allParams = Object.fromEntries([...searchParams])
-            console.log(JSON.stringify( allParams ));
+            const allTags = searchParams.getAll("tags")
 
             let mainURL = ROUTES.HOST + ROUTES.POST_INDEX + '?'
             let paramsForURL = ''
+
             Object.entries(allParams).forEach( ([key, value]) => {
-                paramsForURL += key + '=' + value + '&'
-                console.log('Cicle: ' + paramsForURL);
+                if(key !== 'page' && key !== 'tags' ) paramsForURL += key + '=' + value + '&'
             })
-            console.log(paramsForURL);
+
+            allTags.forEach((t) => {
+                paramsForURL += "tags[]" + "=" + t + "&"
+            })
+
             mainURL += paramsForURL + `page=${currentPage}&per_page=5`
 
             const res = await axios.get(mainURL)
@@ -198,10 +197,16 @@ export const usePostStore = create((set, get) => ({
         get().setTag({name: name})
     },
 
-    storeTag: (e) => {
+    storeTag: (e, searchParams = null, setSearchParams = null, isFilter = false) => {
         e.preventDefault()
 
         const tagName = get().tag.name
+
+        if(isFilter){
+            searchParams.append('tags', tagName)
+            setSearchParams(searchParams)
+        }
+
         console.log(!get().tags.some(t => t.name === tagName) || tagName !== '')
         if(!get().tags.some(t => t.name === tagName) && tagName !== '') get().setTags([...get().tags, get().tag])
         get().setTag({
@@ -209,12 +214,15 @@ export const usePostStore = create((set, get) => ({
         },)
     },
 
-    deleteTag: (e) => {
+    deleteTag: (e, newSearchParams = null, setSearchParams = null, isFilter = false) => {
         e.preventDefault()
         const tagName = get().tag.name
 
-        console.log(tagName);
-        console.log(get().tags.filter((t) => t.name !== tagName));
+        if(isFilter){
+            newSearchParams.delete('tags', tagName)
+            setSearchParams(newSearchParams)
+        }
+
         get().setTags(get().tags.filter((t) => t.name !== tagName))
         get().setTag({
             name: '',

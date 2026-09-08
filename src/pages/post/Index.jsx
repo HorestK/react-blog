@@ -4,6 +4,7 @@ import Post from "../../components/Post.jsx";
 import {generatePath, Link, useSearchParams} from "react-router-dom";
 import {ROUTES} from "../../routes/Routes.js";
 import ServerError from "../../components/ServerError.jsx";
+import PostsNotFound from "../../components/PostsNotFound.jsx";
 
 export default function Index() {
     const {posts, getPosts, postsMeta} = usePostStore()
@@ -21,18 +22,18 @@ export default function Index() {
     useEffect( () => {
         const load = async () => {
             try {
-                console.log('To string: ' + searchParams.toString())
                 await getPosts(setError, searchParams)
-                console.log(Error);
             }catch (error){
-                console.log('catched')
                 setError(true)
             }
         }
         load()
     }, [searchParams.toString()]);
 
-    return Error ? <ServerError setError={setError}/> : (
+    return Error ? <ServerError setError={setError}/>
+        : posts.length === 0
+        ? <PostsNotFound/>
+        : (
         <>
             <div className='mb-20 lg:mb-5'>
                 {posts.map((p) => (
