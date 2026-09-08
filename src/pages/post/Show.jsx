@@ -17,8 +17,6 @@ export default function Show() {
         const load = async() => {
             try{
                 await getPost(id)
-                console.log(user);
-
             }catch (error){
                 setError(true)
             }

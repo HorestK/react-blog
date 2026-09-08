@@ -63,8 +63,8 @@ export const usePostStore = create((set, get) => ({
         get().setPost({...get().post, tags: get().tags})
         console.log(dataToSend);
         try{
-            axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
-            axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            axios.defaults.withCredentials = true;
+            axios.defaults.withXSRFToken = true;
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/posts', dataToSend)
             // console.log(res)
@@ -127,7 +127,6 @@ export const usePostStore = create((set, get) => ({
             get().navigate(generatePath(ROUTES.POST_SHOW, {id: postId}))
         }
         catch (error){
-            console.log(isAxiosError(error))
             if(isAxiosError(error)) setError(true)
             const data = error.response.data.errors ?? {}
             for(let [key, value] of Object.entries(data)){
@@ -171,6 +170,7 @@ export const usePostStore = create((set, get) => ({
             mainURL += paramsForURL + `page=${currentPage}&per_page=5`
 
             const res = await axios.get(mainURL)
+            console.log(res);
             get().setPostsMeta({
                 lastPage: res.data.meta.last_page
             })
@@ -183,7 +183,7 @@ export const usePostStore = create((set, get) => ({
         try{
             axios.defaults.withCredentials = true;
             const res = await axios.get(`http://localhost:8000/api/posts/${postId}`)
-            console.log(res);
+
             get().setPost(res.data.data)
             get().setTags(res.data.data.tags)
         }catch (error){
@@ -207,7 +207,6 @@ export const usePostStore = create((set, get) => ({
             setSearchParams(searchParams)
         }
 
-        console.log(!get().tags.some(t => t.name === tagName) || tagName !== '')
         if(!get().tags.some(t => t.name === tagName) && tagName !== '') get().setTags([...get().tags, get().tag])
         get().setTag({
             name: '',

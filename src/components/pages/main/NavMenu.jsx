@@ -7,7 +7,7 @@ export default function NavMenu({closeMenu}) {
     const {user, logoutUser} = useUserStore()
 
     return (
-        <nav className='fixed left-0 lg:left-[80%] top-20 w-full' onClick={() => console.log(user)}>
+        <nav className='fixed left-0 lg:left-[80%] top-20 w-full'>
             {/*<Link to={ROUTES.MAIN_INDEX} onClick={() => {closeMenu()}}>*/}
             {/*    <MenuItem name='Home'/>*/}
             {/*</Link>*/}

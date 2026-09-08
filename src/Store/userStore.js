@@ -22,7 +22,6 @@ export const useUserStore = create((set, get) => ({
         const name = e.target.name
         const value = e.target.value
         let newErrors = []
-        console.log(value);
 
         if(name === 'name' && value.length > 100) newErrors.push({name: 'title', body: 'Too long name'})
         if(name === 'email' && value.length > 255) newErrors.push({name: 'content', body: 'Too long email'})
@@ -48,7 +47,7 @@ export const useUserStore = create((set, get) => ({
             axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/register', dataToSend)
-            console.log(res);
+
             get().setUser(res.data.data)
             get().navigate(ROUTES.POST_INDEX)
         }
@@ -76,12 +75,13 @@ export const useUserStore = create((set, get) => ({
         }
 
         try{
-            console.log(dataToSend);
-            axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
-            axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            // axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+            // axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            axios.defaults.withCredentials = true;
+            axios.defaults.withXSRFToken = true;
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/login', dataToSend)
-            console.log(res);
+
             get().setUser(res.data.data)
             get().navigate(ROUTES.POST_INDEX)
         }
@@ -108,8 +108,10 @@ export const useUserStore = create((set, get) => ({
             }
         })
 
-        axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
-        axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+        // axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+        // axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+        axios.defaults.withCredentials = true;
+        axios.defaults.withXSRFToken = true;
         await axios.get('http://localhost:8000/sanctum/csrf-cookie')
         await axios.post('http://localhost:8000/api/logout')
 
