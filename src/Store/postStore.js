@@ -170,7 +170,7 @@ export const usePostStore = create((set, get) => ({
             mainURL += paramsForURL + `page=${currentPage}&per_page=5`
 
             const res = await axios.get(mainURL)
-            console.log(res);
+
             get().setPostsMeta({
                 lastPage: res.data.meta.last_page
             })

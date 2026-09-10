@@ -9,6 +9,7 @@ export const useUserStore = create((set, get) => ({
         email: '',
         can: {
             create: false,
+            sendComment: false
         }
     },
     errors: [],
