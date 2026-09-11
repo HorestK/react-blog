@@ -54,17 +54,20 @@ export const useCommentStore = create( (set, get) => ({
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post( `http://localhost:8000/api/posts/${postId}/comments`
                 , dataToSend)
-            console.log(res);
+
+            get().setComment({
+                content: ''
+            })
         }catch (e){
             console.log(e);
         }
     },
 
-    updateComment: async (e, commentId) => {
+    updateComment: async (e, commentId, newContent) => {
         e.preventDefault()
 
         const dataToSend = {
-            content: get().comment.content
+            content: newContent
         }
 
         try{

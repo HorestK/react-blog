@@ -20,7 +20,10 @@ export default function Show() {
         commentsMeta,
         handleComment,
         storeComment,
-        setComments
+        setComments,
+        setCommentsMeta,
+        setComment,
+        comment
     } = useCommentStore()
     const [searchParams, setSearchParams] = useSearchParams()
     const page = +searchParams.get('page') || 1
@@ -43,6 +46,10 @@ export default function Show() {
 
     useEffect(() => {
         const load = async () => {
+            setComment({
+                content: ''
+            })
+
             try {
                 await getComments(id, page)
             } catch (error) {
@@ -90,6 +97,7 @@ export default function Show() {
                               onChange={(e) => {
                                   handleComment(e)
                               }}
+                              value={comment.content}
                     />
                     <input type='submit'
                            className='bg-sky-600 text-white p-2 cursor-pointer'
