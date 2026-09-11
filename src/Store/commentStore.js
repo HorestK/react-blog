@@ -90,6 +90,8 @@ export const useCommentStore = create( (set, get) => ({
             const res =
                 await axios.delete(`http://localhost:8000/api/comments/${commentId}`)
 
+            const newComments = get().comments.filter( (c)=> c.id !== commentId)
+            get().setComments(newComments)
             console.log(res);
         }catch(e){
             console.log(e)

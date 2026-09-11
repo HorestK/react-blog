@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useCommentStore} from "../Store/commentStore.js";
+import {useSearchParams} from "react-router-dom";
 
 export default function CommentItem({newComment}){
     const [isEdit, setIsEdit] = useState(false)
@@ -8,8 +9,10 @@ export default function CommentItem({newComment}){
         updateComment,
         deleteComment,
         comment,
+        comments,
         setComment
     } = useCommentStore()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     useEffect(() => {
         setComment({
@@ -36,6 +39,11 @@ export default function CommentItem({newComment}){
                 onClick={() => {
                     console.log('delete')
                     if( confirm('Are you sure about it?') ) deleteComment(newComment.id)
+                    if(comments.length <= 1) {
+                        const page = +searchParams.get('page')
+                        searchParams.set('page', (page - 1) )
+                        setSearchParams(searchParams)
+                    }
                 }}
             >
                 Delete
