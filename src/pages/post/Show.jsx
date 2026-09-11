@@ -20,6 +20,7 @@ export default function Show() {
         commentsMeta,
         handleComment,
         storeComment,
+        setComments
     } = useCommentStore()
     const [searchParams, setSearchParams] = useSearchParams()
     const page = +searchParams.get('page') || 1
@@ -96,7 +97,7 @@ export default function Show() {
                 </form>
                 }
                 {comments.map((c) => (
-                    <CommentItem key={c.id} comment={c}/>
+                    <CommentItem key={c.id} newComment={c}/>
                 ))}
             </div>
             {comments.length !== 0 ?

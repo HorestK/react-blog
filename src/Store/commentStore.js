@@ -58,5 +58,41 @@ export const useCommentStore = create( (set, get) => ({
         }catch (e){
             console.log(e);
         }
+    },
+
+    updateComment: async (e, commentId) => {
+        e.preventDefault()
+
+        const dataToSend = {
+            content: get().comment.content
+        }
+
+        try{
+            axios.defaults.withXSRFToken = true;
+            axios.defaults.withCredentials = true;
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            const res =
+                await axios.put(`http://localhost:8000/api/comments/${commentId}`, dataToSend)
+
+            const newComment = res.data.data
+            const newComments = get().comments.map( (c)=> c.id === commentId ? ({...c, content: newComment.content}) : c )
+            get().setComments(newComments)
+        }catch(e){
+            console.log(e)
+        }
+    },
+
+    deleteComment: async (commentId) => {
+        try{
+            axios.defaults.withXSRFToken = true;
+            axios.defaults.withCredentials = true;
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            const res =
+                await axios.delete(`http://localhost:8000/api/comments/${commentId}`)
+
+            console.log(res);
+        }catch(e){
+            console.log(e)
+        }
     }
 }) )
