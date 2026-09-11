@@ -30,7 +30,7 @@ export const useCommentStore = create( (set, get) => ({
 
     getComments: async (postId, commentPage) => {
         try{
-            const res = await axios.get(ROUTES.HOST + `/posts/${postId}/comments?page=${commentPage}` + '&per_page=5')
+            const res = await axios.get(`http://localhost:8000/api/posts/${postId}/comments?page=${commentPage}` + '&per_page=5')
 
             get().setCommentsMeta({
                 lastPage: res.data.meta.last_page
