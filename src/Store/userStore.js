@@ -5,6 +5,7 @@ import {isAxiosError} from "axios";
 
 export const useUserStore = create((set, get) => ({
     user: {
+        id: '',
         name: '',
         email: '',
         can: {
