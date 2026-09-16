@@ -39,7 +39,7 @@ export default function Index() {
                 {posts.map((p) => (
                     <Link key={p.id}
                           className='lg:w-1/2 lg:mx-auto lg:block'
-                          to={generatePath(ROUTES.POST_SHOW, {id: p.id})}>
+                          to={generatePath(ROUTES.POST_SHOW, {id: p.id}) + `?previous_page=${page}`}>
                         <Post post={p}/>
                     </Link>
                 ))}

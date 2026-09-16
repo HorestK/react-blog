@@ -26,6 +26,7 @@ export default function Show() {
         comment
     } = useCommentStore()
     const [searchParams, setSearchParams] = useSearchParams()
+    const previousPageFromParam = searchParams.get('previous_page') || 1
     const page = +searchParams.get('page') || 1
 
     let nextPage = new URLSearchParams(searchParams)
@@ -65,7 +66,7 @@ export default function Show() {
             <div className='flex w-full relative mb-12'>
                 <a
                     className='cursor-pointer px-4 py-2 bg-sky-600 text-white absolute right-0'
-                    onClick={() => navigate(ROUTES.POST_INDEX)}
+                    onClick={() => navigate(ROUTES.POST_INDEX + `?page=${previousPageFromParam}`)}
                 >
                     Back
                 </a>

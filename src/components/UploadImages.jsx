@@ -1,0 +1,52 @@
+import {useState} from "react";
+import PhotoView from "./PhotoView.jsx";
+import {usePostStore} from "../Store/postStore.js";
+
+export default function UploadImages(){
+    // const [previewURL, setPreviewURL] = useState()
+    // const [selectedPhoto, setSelectedPhoto] = useState()
+    const [photoIsClicked, setPhotoIsClicked] = useState(false)
+    const {
+        handlePhoto,
+        previewURL
+    } = usePostStore()
+    //
+    // const handlePhoto = (e) => {
+    //     const file = e.target.files[0]
+    //     setSelectedPhoto(file)
+    //
+    //     const photoURL = URL.createObjectURL(file)
+    //     setPreviewURL(photoURL)
+    //     console.log(file);
+    // }
+
+    return (
+        <>
+            <div className='w-full'>
+                <label className='bg-sky-600 text-white p-2 cursor-pointer'>
+                    Choose Photo
+                    <input type='file'
+                           className='hidden'
+                           name='image'
+                           onChange={(e) => {
+                               handlePhoto(e)
+                           }}
+                    />
+                </label>
+            </div>
+
+            {previewURL && <img src={previewURL}
+                 className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%]'
+                 onClick={()=>{
+                     console.log('photo')
+                     setPhotoIsClicked(true)
+                 }}
+            >
+            </img>}
+            {photoIsClicked && <PhotoView previewURL={previewURL}
+                                          isBgClicked={photoIsClicked}
+                                          setIsBgClicked={setPhotoIsClicked}
+            />}
+        </>
+    )
+}

@@ -13,6 +13,7 @@ export const usePostStore = create((set, get) => ({
         },
         title: '',
         content: '',
+        photo: '',
         tags: [],
         can: {
             update: false,
@@ -28,6 +29,9 @@ export const usePostStore = create((set, get) => ({
     },
     errors: [],
     navigate: '',
+    selectedPhoto: '',
+    previewURL: '',
+    postPhotoFromServer: '',
 
     setPosts: newPosts => set(() => ({posts: newPosts})),
     setPost: newPost => set(() => ({post: newPost})),
@@ -36,6 +40,10 @@ export const usePostStore = create((set, get) => ({
     setTag: newTag => set(() => ({tag: newTag})),
     setErrors: newErrors => set(() => ({errors: newErrors})),
     setPostNavigate: newNavigate => set(() => ({navigate: newNavigate})),
+    setSelectedPhoto: newSelectedPhoto => set(() => ({selectedPhoto: newSelectedPhoto})),
+    setPreviewURL: newPreviewURL => set(() => ({previewURL: newPreviewURL})),
+    setPostPhotoFromServer: newPostPhotoFromServer => set( () =>
+        ({postPhotoFromServer: newPostPhotoFromServer}) ),
 
     handlePost: (e) => {
         const name = e.target.name
@@ -60,13 +68,21 @@ export const usePostStore = create((set, get) => ({
 
         if(!dataToSend.category_id) dataToSend.category_id = 1
 
+        let postForm = new FormData()
+        postForm.append('category_id', dataToSend.category_id)
+        postForm.append('title', dataToSend.title)
+        postForm.append('content', dataToSend.content)
+        postForm.append('tags', JSON.stringify( dataToSend.tags ))
+
+        if(get().selectedPhoto) postForm.append('photo', get().selectedPhoto)
+
         get().setPost({...get().post, tags: get().tags})
-        console.log(dataToSend);
+        console.log(...postForm.entries());
         try{
             axios.defaults.withCredentials = true;
             axios.defaults.withXSRFToken = true;
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-            const res = await axios.post('http://localhost:8000/api/posts', dataToSend)
+            const res = await axios.post('http://localhost:8000/api/posts', postForm)
             // console.log(res)
             get().setPost({
                 category: {
@@ -174,7 +190,13 @@ export const usePostStore = create((set, get) => ({
             get().setPostsMeta({
                 lastPage: res.data.meta.last_page
             })
-            get().setPosts(res.data.data)
+
+            // const photoURL = res.data.data.image ? 'http://localhost:8000' + res.data.data.image : null
+
+            get().setPosts(res.data.data.map((p)=>({
+                ...p,
+                ['photo']: p.image ? 'http://localhost:8000' + p.image : null
+            })))
         }catch (error){
             throw error
         }
@@ -183,8 +205,9 @@ export const usePostStore = create((set, get) => ({
         try{
             axios.defaults.withCredentials = true;
             const res = await axios.get(`http://localhost:8000/api/posts/${postId}`)
+            const photoURL = res.data.data.image ? 'http://localhost:8000' + res.data.data.image : null
 
-            get().setPost(res.data.data)
+            get().setPost({...res.data.data, ['photo']: photoURL})
             get().setTags(res.data.data.tags)
         }catch (error){
             throw error
@@ -226,5 +249,14 @@ export const usePostStore = create((set, get) => ({
         get().setTag({
             name: '',
         },)
+    },
+
+    handlePhoto: (e) => {
+        const file = e.target.files[0]
+        get().setSelectedPhoto(file)
+
+        const photoURL = URL.createObjectURL(file)
+        get().setPreviewURL(photoURL)
+        console.log(file);
     }
 }))
