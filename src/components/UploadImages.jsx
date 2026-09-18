@@ -2,7 +2,7 @@ import {useState} from "react";
 import PhotoView from "./PhotoView.jsx";
 import {usePostStore} from "../Store/postStore.js";
 
-export default function UploadImages(){
+export default function UploadImages({isAvatar = false}){
     // const [previewURL, setPreviewURL] = useState()
     // const [selectedPhoto, setSelectedPhoto] = useState()
     const [photoIsClicked, setPhotoIsClicked] = useState(false)
@@ -21,10 +21,10 @@ export default function UploadImages(){
     // }
 
     return (
-        <>
-            <div className='w-full'>
+        <div className=''>
+            <div className='w-full mb-3'>
                 <label className='bg-sky-600 text-white p-2 cursor-pointer'>
-                    Choose Photo
+                    Choose {isAvatar ? 'Avatar' : 'Photo'}
                     <input type='file'
                            className='hidden'
                            name='image'
@@ -36,7 +36,7 @@ export default function UploadImages(){
             </div>
 
             {previewURL && <img src={previewURL}
-                 className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%]'
+                 className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%] mt-4 mb-2'
                  onClick={()=>{
                      console.log('photo')
                      setPhotoIsClicked(true)
@@ -47,6 +47,6 @@ export default function UploadImages(){
                                           isBgClicked={photoIsClicked}
                                           setIsBgClicked={setPhotoIsClicked}
             />}
-        </>
+        </div>
     )
 }

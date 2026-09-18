@@ -1,6 +1,7 @@
 import {useUserStore} from "../../Store/userStore.js";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";
+import UploadImages from "../../components/UploadImages.jsx";
 
 export default function Register(){
     const {handleUser, regUser, errors} = useUserStore()
@@ -29,6 +30,7 @@ export default function Register(){
                        handleUser(e)
                    }}
                    name='email'/>
+            <UploadImages isAvatar={true}/>
             <input type='password'
                    placeholder='Password'
                    className='border border-gray-300 rounded-xl w-1/1 p-2'
