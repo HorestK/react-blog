@@ -8,6 +8,7 @@ export const useUserStore = create((set, get) => ({
         id: '',
         name: '',
         email: '',
+        avatar: '',
         can: {
             create: false,
             sendComment: false
@@ -15,10 +16,14 @@ export const useUserStore = create((set, get) => ({
     },
     errors: [],
     navigate: '',
+    selectedAvatar: '',
+    previewURLAvatar: '',
 
     setErrors: newErrors => set(() => ({errors: newErrors})),
     setUser: newUser => set(() => ({user: newUser})),
     setUserNavigate: newNavigate => set(() => ({navigate: newNavigate})),
+    setSelectedAvatar: newSelectedPhoto => set(() => ({selectedAvatar: newSelectedPhoto})),
+    setPreviewURLAvatar: newPreviewURL => set(() => ({previewURLAvatar: newPreviewURL})),
 
     handleUser: (e) => {
         const name = e.target.name
@@ -36,19 +41,31 @@ export const useUserStore = create((set, get) => ({
     regUser: async (e) => {
         e.preventDefault()
 
+        //собрать объект FormData
+
         let newErrors = []
         const dataToSend = {
             name: get().user.name,
             email: get().user.email,
             password: get().user.password,
             password_confirmation: get().user.password_confirmation,
+            avatar: get().selectedAvatar
         }
+
+        console.log(dataToSend)
+
+        let formData = new FormData()
+        formData.append('name', dataToSend.name)
+        formData.append('email', dataToSend.email)
+        formData.append('password', dataToSend.password)
+        formData.append('password_confirmation', dataToSend.password_confirmation)
+        formData.append('avatar', dataToSend.avatar)
 
         try{
             axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
             axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-            const res = await axios.post('http://localhost:8000/api/register', dataToSend)
+            const res = await axios.post('http://localhost:8000/api/register', formData)
 
             get().setUser(res.data.data)
             get().navigate(ROUTES.POST_INDEX)
@@ -118,5 +135,15 @@ export const useUserStore = create((set, get) => ({
         await axios.post('http://localhost:8000/api/logout')
 
         get().navigate(ROUTES.POST_INDEX)
+    },
+
+    handleAvatar: (e) => {
+        const file = e.target.files[0]
+        get().setSelectedAvatar(file)
+
+        const photoURL = URL.createObjectURL(file)
+        get().setPreviewURLAvatar(photoURL)
+        console.log(get().previewURLAvatar);
+        console.log(file);
     }
 }))

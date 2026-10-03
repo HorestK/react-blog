@@ -1,6 +1,7 @@
 import {useState} from "react";
 import PhotoView from "./PhotoView.jsx";
 import {usePostStore} from "../Store/postStore.js";
+import {useUserStore} from "../Store/userStore.js";
 
 export default function UploadImages({isAvatar = false}){
     // const [previewURL, setPreviewURL] = useState()
@@ -10,6 +11,10 @@ export default function UploadImages({isAvatar = false}){
         handlePhoto,
         previewURL
     } = usePostStore()
+    const {
+        handleAvatar,
+        previewURLAvatar
+    } = useUserStore()
     //
     // const handlePhoto = (e) => {
     //     const file = e.target.files[0]
@@ -29,13 +34,15 @@ export default function UploadImages({isAvatar = false}){
                            className='hidden'
                            name='image'
                            onChange={(e) => {
-                               handlePhoto(e)
+                               if(!isAvatar) handlePhoto(e)
+                               handleAvatar(e)
                            }}
                     />
                 </label>
             </div>
 
-            {previewURL && <img src={previewURL}
+
+            {(previewURLAvatar || previewURL) && <img src={isAvatar ? previewURLAvatar : previewURL}
                  className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%] mt-4 mb-2'
                  onClick={()=>{
                      console.log('photo')
@@ -43,7 +50,7 @@ export default function UploadImages({isAvatar = false}){
                  }}
             >
             </img>}
-            {photoIsClicked && <PhotoView previewURL={previewURL}
+            {photoIsClicked && <PhotoView previewURL={isAvatar ? previewURLAvatar : previewURL}
                                           isBgClicked={photoIsClicked}
                                           setIsBgClicked={setPhotoIsClicked}
             />}
