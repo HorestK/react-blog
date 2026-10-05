@@ -9,6 +9,7 @@ export const useUserStore = create((set, get) => ({
         name: '',
         email: '',
         avatar: '',
+        isAdmin: '',
         can: {
             create: false,
             sendComment: false
@@ -100,8 +101,10 @@ export const useUserStore = create((set, get) => ({
             axios.defaults.withXSRFToken = true;
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/login', dataToSend)
+            const avatarURL = res.data.data.avatar ? "http://localhost:8000/storage/" + res.data.data.avatar : null
 
-            get().setUser(res.data.data)
+            console.log(JSON.stringify(res.data.data));
+            get().setUser({...res.data.data, ['avatar']: avatarURL})
             get().navigate(ROUTES.POST_INDEX)
         }
         catch (error){
