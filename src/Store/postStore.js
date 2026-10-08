@@ -251,12 +251,13 @@ export const usePostStore = create((set, get) => ({
         },)
     },
 
-    handlePhoto: (e) => {
+    handlePhoto: (e, setPicture) => {
         const file = e.target.files[0]
         get().setSelectedPhoto(file)
 
         const photoURL = URL.createObjectURL(file)
-        get().setPreviewURL(photoURL)
+        // get().setPreviewURL(photoURL)
+        setPicture(photoURL)
         console.log(file);
     }
 }))

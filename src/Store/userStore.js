@@ -102,6 +102,7 @@ export const useUserStore = create((set, get) => ({
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/login', dataToSend)
             const avatarURL = res.data.data.avatar ? "http://localhost:8000/storage/" + res.data.data.avatar : null
+            console.log(avatarURL);
 
             console.log(JSON.stringify(res.data.data));
             get().setUser({...res.data.data, ['avatar']: avatarURL})
@@ -140,13 +141,58 @@ export const useUserStore = create((set, get) => ({
         get().navigate(ROUTES.POST_INDEX)
     },
 
-    handleAvatar: (e) => {
+    handleAvatar: (e, setPicture) => {
         const file = e.target.files[0]
         get().setSelectedAvatar(file)
 
         const photoURL = URL.createObjectURL(file)
-        get().setPreviewURLAvatar(photoURL)
+        // get().setPreviewURLAvatar(photoURL)
+        setPicture(photoURL)
         console.log(get().previewURLAvatar);
         console.log(file);
-    }
+    },
+
+    updateUser: async (e, userId) => {
+        e.preventDefault()
+
+        let newErrors = []
+        const dataToSend = {
+            name: get().user.name,
+            email: get().user.email,
+            password: get().user.password,
+            password_confirmation: get().user.password_confirmation,
+            avatar: get().selectedAvatar
+        }
+
+        console.log(dataToSend)
+
+        let formData = new FormData()
+        formData.append('name', dataToSend.name)
+        // formData.append('email', dataToSend.email)
+        formData.append('password', dataToSend.password)
+        formData.append('password_confirmation', dataToSend.password_confirmation)
+        formData.append('avatar', dataToSend.avatar)
+
+        try{
+            axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+            axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            const res = await axios.put(`http://localhost:8000/api/users/${userId}`, formData)
+
+            get().setUser(res.data.data)
+            get().navigate(ROUTES.USER_PROFILE)
+        }
+        catch (error){
+            if(isAxiosError(error)) {
+                newErrors.push({name: 'User', body: 'Email has already been taken'})
+                get().setErrors(newErrors)
+                return
+            }
+            for(let [key, value] of Object.entries(error.response.data.errors)){
+                newErrors.push({name: key, body: value[0]})
+            }
+            get().setErrors(newErrors)
+        }
+
+    },
 }))

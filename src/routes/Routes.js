@@ -12,5 +12,6 @@ export const ROUTES = {
 
     USER_REGISTER: '/register',
     USER_LOGIN: '/login',
-    USER_PROFILE: '/users/:id'
+    USER_PROFILE: '/users/:id',
+    USER_EDIT: '/users/:id/edit',
 }

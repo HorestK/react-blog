@@ -19,6 +19,7 @@ import Login from "./pages/user/Login.jsx";
 import SearсhButton from "./components/pages/main/SearchButton.jsx";
 import SearchMenu from "./components/pages/main/SearchMenu.jsx";
 import Profile from "./pages/user/Profile.jsx";
+import UserEdit from "./pages/user/Edit.jsx";
 
 function App() {
     const [isMenu, setIsMenu] = useState(false)
@@ -79,6 +80,7 @@ function App() {
                     <Route path={ROUTES.USER_REGISTER} element={<Register/>}/>
                     <Route path={ROUTES.USER_LOGIN} element={<Login/>}/>
                     <Route path={ROUTES.USER_PROFILE} element={<Profile/>}/>
+                    <Route path={ROUTES.USER_EDIT} element={<UserEdit/>}/>
                 </Routes>
             </main>
         </Router>

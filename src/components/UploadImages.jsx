@@ -1,9 +1,9 @@
-import {useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import PhotoView from "./PhotoView.jsx";
 import {usePostStore} from "../Store/postStore.js";
 import {useUserStore} from "../Store/userStore.js";
 
-export default function UploadImages({isAvatar = false}){
+export default function UploadImages({isAvatar = false, currentAvatar = null, imageInputRef}){
     // const [previewURL, setPreviewURL] = useState()
     // const [selectedPhoto, setSelectedPhoto] = useState()
     const [photoIsClicked, setPhotoIsClicked] = useState(false)
@@ -25,6 +25,12 @@ export default function UploadImages({isAvatar = false}){
     //     console.log(file);
     // }
 
+    const [picture, setPicture] = useState(currentAvatar ? currentAvatar : (isAvatar ? previewURLAvatar : previewURL))
+
+    useEffect(() => {
+        console.log(currentAvatar);
+    }, []);
+
     return (
         <div className=''>
             <div className='w-full mb-3'>
@@ -33,16 +39,18 @@ export default function UploadImages({isAvatar = false}){
                     <input type='file'
                            className='hidden'
                            name='image'
+                           id='user_avatar'
+                           ref={imageInputRef}
                            onChange={(e) => {
-                               if(!isAvatar) handlePhoto(e)
-                               handleAvatar(e)
+                               if(!isAvatar) handlePhoto(e, setPicture)
+                               handleAvatar(e, setPicture)
                            }}
                     />
                 </label>
             </div>
 
 
-            {(previewURLAvatar || previewURL) && <img src={isAvatar ? previewURLAvatar : previewURL}
+            {(picture || currentAvatar) && <img src={picture}
                  className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%] mt-4 mb-2'
                  onClick={()=>{
                      console.log('photo')
@@ -50,7 +58,7 @@ export default function UploadImages({isAvatar = false}){
                  }}
             >
             </img>}
-            {photoIsClicked && <PhotoView previewURL={isAvatar ? previewURLAvatar : previewURL}
+            {photoIsClicked && <PhotoView previewURL={picture}
                                           isBgClicked={photoIsClicked}
                                           setIsBgClicked={setPhotoIsClicked}
             />}

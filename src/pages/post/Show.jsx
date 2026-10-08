@@ -34,6 +34,10 @@ export default function Show() {
     let previousPage = new URLSearchParams(searchParams)
     previousPage.set('page', (page - 1))
 
+    useEffect( () => {
+        console.log(id);
+    }, [] )
+
     useEffect(() => {
         const load = async () => {
             try {
