@@ -110,7 +110,7 @@ export default function Show() {
                 </form>
                 }
                 {comments.map((c) => (
-                    <CommentItem key={c.id} newComment={c}/>
+                    <CommentItem key={c.id} newComment={c} postId={id}/>
                 ))}
             </div>
             {comments.length !== 0 ?
