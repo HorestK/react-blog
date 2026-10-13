@@ -259,5 +259,27 @@ export const usePostStore = create((set, get) => ({
         // get().setPreviewURL(photoURL)
         setPicture(photoURL)
         console.log(file);
+    },
+
+    setReaction: async (e, post) => {
+        const name = e.target.name
+        e.stopPropagation()
+
+        // console.log(name);
+        // if(name === 'like') post.likes = post.likes + 1
+        // else if(name === 'dislike') post.dislikes = post.dislikes + 1
+
+        try{
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            let res;
+
+            if(name === 'like') res = await axios.put(`http://localhost:8000/api/posts/${post.id}/likes`)
+            else if(name === 'dislike') res = await axios.put(`http://localhost:8000/api/posts/${post.id}/dislikes`)
+
+            const newPost = res.data.data
+            get().setPosts( get().posts.map( (p) => p.id === post.id ? newPost : p ) )
+        }catch (e){
+            console.error(e)
+        }
     }
 }))

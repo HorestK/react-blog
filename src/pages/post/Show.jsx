@@ -47,7 +47,7 @@ export default function Show() {
             }
         }
         load()
-    }, [Error]);
+    }, []);
 
     useEffect(() => {
         const load = async () => {
