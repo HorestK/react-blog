@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {useCommentStore} from "../Store/commentStore.js";
 import {useSearchParams} from "react-router-dom";
+import {useUserStore} from "../Store/userStore.js";
 
 export default function SubcommentItem({subComment, commentId}) {
     const [isEdit, setIsEdit] = useState(false)
@@ -15,8 +16,10 @@ export default function SubcommentItem({subComment, commentId}) {
         setComment,
         comment,
         updateSubComment,
-        deleteSubComment
+        deleteSubComment,
+        setReactionSubComment
     } = useCommentStore()
+    const {user} = useUserStore()
     const [searchParams, setSearchParams] = useSearchParams()
     const page = +searchParams.get('page')
 
@@ -71,7 +74,27 @@ export default function SubcommentItem({subComment, commentId}) {
                        value='Update'
                 />
             </form>
-            : <p className='mb-3'>{subComment.content}</p>
+            : <>
+                <p className='mb-3'>{subComment.content}</p>
+                <div className='flex gap-10'>
+                    <div>
+                        <button className='text-2xl'
+                                name='like'
+                                onClick={(e) => {
+                                    if (user.id !== '') setReactionSubComment(e, subComment, commentId)
+                                    else alert("You aren't logged. Please login")
+                                }}>👍 {subComment.likes}</button>
+                    </div>
+                    <div>
+                        <button className='text-2xl'
+                                name='dislike'
+                                onClick={(e) => {
+                                    if (user.id !== '') setReactionSubComment(e, subComment, commentId)
+                                    else alert("You aren't logged. Please login")
+                                }}>👎 {subComment.dislikes}</button>
+                    </div>
+                </div>
+            </>
         }
     </div>
 }

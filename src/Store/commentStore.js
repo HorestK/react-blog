@@ -172,4 +172,46 @@ export const useCommentStore = create( (set, get) => ({
             console.log(e)
         }
     },
+
+    setReactionComment: async (e, comment) => {
+        const name = e.target.name
+        e.stopPropagation()
+
+        try{
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            let res;
+
+            if(name === 'like') res = await axios.put(`http://localhost:8000/api/comments/${comment.id}/likes`)
+            else if(name === 'dislike') res = await axios.put(`http://localhost:8000/api/comments/${comment.id}/dislikes`)
+
+            const newComment = res.data.data
+            get().setComments( get().comments.map( (c) => c.id === comment.id ? newComment : c ) )
+        }catch (e){
+            console.error(e)
+        }
+    },
+
+    setReactionSubComment: async (e, subComment, commentId) => {
+        const name = e.target.name
+        e.stopPropagation()
+
+        try{
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie')
+            let res;
+
+            if(name === 'like') res = await axios.put(`http://localhost:8000/api/subcomments/${subComment.id}/likes`)
+            else if(name === 'dislike') res = await axios.put(`http://localhost:8000/api/subcomments/${subComment.id}/dislikes`)
+
+            const newSubComment = res.data.data
+
+            let targetComment = get().comments.filter( (c) => c.id === commentId)[0]
+            targetComment.subcomments = targetComment.subcomments.map( (sc) => sc.id === newSubComment.id ? newSubComment : sc )
+
+            get().setComments([...get().comments
+                .map( (c) => c.id === commentId ? targetComment : c )])
+
+        }catch (e){
+            console.error(e)
+        }
+    }
 }) )

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useCommentStore} from "../Store/commentStore.js";
 import {useSearchParams} from "react-router-dom";
 import SubcommentItem from "./SubcommentItem.jsx";
+import {useUserStore} from "../Store/userStore.js";
 
 export default function CommentItem({newComment, postId}){
     const [isEdit, setIsEdit] = useState(false)
@@ -27,8 +28,11 @@ export default function CommentItem({newComment, postId}){
         storeSubComment,
         handleComment,
         setComment,
-        comment
+        comment,
+        setReactionComment
     } = useCommentStore()
+
+    const {user} = useUserStore()
     const [searchParams, setSearchParams] = useSearchParams()
     const page = +searchParams.get('page')
     const [isRepliedMode, setIsRepliedMode] = useState(false)
@@ -97,17 +101,35 @@ export default function CommentItem({newComment, postId}){
             className='cursor-pointer px-2 py-1 bg-sky-600 text-white relative left-[87%] mb-3'
             onClick={async () => {
                 console.log(isRepliedMode)
-                if(isRepliedMode) setIsRepliedMode(false)
+                if (isRepliedMode) setIsRepliedMode(false)
                 else setIsRepliedMode(true)
             }}
         >
             Reply
         </button>
+        <div className='flex gap-10'>
+            <div>
+                <button className='text-2xl'
+                        name='like'
+                        onClick={(e) => {
+                            if (user.id !== '') setReactionComment(e, newComment)
+                            else alert("You aren't logged. Please login")
+                        }}>👍 {newComment.likes}</button>
+            </div>
+            <div>
+                <button className='text-2xl'
+                        name='dislike'
+                        onClick={(e) => {
+                            if (user.id !== '') setReactionComment(e, newComment)
+                            else alert("You aren't logged. Please login")
+                        }}>👎 {newComment.dislikes}</button>
+            </div>
+        </div>
         {isRepliedMode && <form className='mb-3'
-            onSubmit={(e) => {
-            storeSubComment(e, postId, newComment.id)
-            setIsRepliedMode(false)
-        }}>
+                                onSubmit={(e) => {
+                                    storeSubComment(e, postId, newComment.id)
+                                    setIsRepliedMode(false)
+                                }}>
             <textarea placeholder='Text'
                       name='content'
                       className='border border-gray-300 rounded-xl w-1/1 p-2 mb-3 mt-2'
@@ -123,19 +145,20 @@ export default function CommentItem({newComment, postId}){
             />
         </form>}
         {subCommentsLength > 0 && (<>
-            <br/>
-            <button className='mb-3 font-bold text-xl text-gray-400'
-                    onClick={() => {
-                        if(isOpenedReplies) setIsOpenedReplies(false)
-                        else setIsOpenedReplies(true)
-                    }}
-            >Replies({subCommentsLength})</button>
+                <br/>
+                <button className='mb-3 font-bold text-xl text-gray-400'
+                        onClick={() => {
+                            if (isOpenedReplies) setIsOpenedReplies(false)
+                            else setIsOpenedReplies(true)
+                        }}
+                >Replies({subCommentsLength})
+                </button>
             </>
         )}
         <div className='ml-10'>
-        {isOpenedReplies && newComment.subcomments.map( (sc)=>(
-            <SubcommentItem key={sc.id} subComment={sc} commentId={newComment.id}/>
-        ))}
+            {isOpenedReplies && newComment.subcomments.map((sc) => (
+                <SubcommentItem key={sc.id} subComment={sc} commentId={newComment.id}/>
+            ))}
         </div>
     </div>
 }
