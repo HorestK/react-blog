@@ -1,9 +1,10 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useCommentStore} from "../Store/commentStore.js";
 import {useSearchParams} from "react-router-dom";
 import {useUserStore} from "../Store/userStore.js";
+import {useSubCommentStore} from "../Store/subcommentStore.js";
 
-export default function SubcommentItem({subComment, commentId}) {
+export default function SubcommentItem({subComment, commentId, subcommentsCount, setSubcommentsCount, page, setPage}) {
     const [isEdit, setIsEdit] = useState(false)
     const {
         updateComment,
@@ -15,13 +16,18 @@ export default function SubcommentItem({subComment, commentId}) {
         handleComment,
         setComment,
         comment,
-        updateSubComment,
-        deleteSubComment,
-        setReactionSubComment
     } = useCommentStore()
     const {user} = useUserStore()
     const [searchParams, setSearchParams] = useSearchParams()
-    const page = +searchParams.get('page')
+
+    const {
+        subCommentsMeta,
+        setReactionSubComment,
+        deleteSubComment,
+        updateSubComment,
+        subcomments,
+        setSubCommentsMeta
+    } = useSubCommentStore()
 
     return <div className='border border-gray-400 px-4 py-2 mb-3 relative'>
         {(subComment?.can?.update ?? false) &&
@@ -44,11 +50,16 @@ export default function SubcommentItem({subComment, commentId}) {
                 className='cursor-pointer px-2 py-1 bg-red-600 text-white absolute right-3'
                 onClick={async () => {
                     console.log('delete')
-                    if (confirm('Are you sure about it?')) await deleteSubComment(commentId, subComment.id)
+                    if (confirm('Are you sure about it?')) {
+                        setSubcommentsCount(subcommentsCount - 1)
+                        await deleteSubComment(commentId, subComment.id)
+                    }
 
-                    if (comments.length <= 1 && page > 1) {
-                        searchParams.set('page', (page - 1))
-                        setSearchParams(searchParams)
+                    console.log(subcomments.length);
+
+                    if (subcomments.length <= 1 && page > 1) {
+                        setPage(page - 1)
+                        setSubCommentsMeta({...subCommentsMeta, ['last_page']: subCommentsMeta.last_page - 1})
                     }
                 }}
             >
