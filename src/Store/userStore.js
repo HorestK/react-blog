@@ -12,8 +12,16 @@ export const useUserStore = create((set, get) => ({
         isAdmin: '',
         can: {
             create: false,
+            delete: false,
+            update: false,
             sendComment: false
         }
+    },
+    anotherUser: {
+        id: '',
+        name: '',
+        email: '',
+        avatar: '',
     },
     errors: [],
     navigate: '',
@@ -25,6 +33,7 @@ export const useUserStore = create((set, get) => ({
     setUserNavigate: newNavigate => set(() => ({navigate: newNavigate})),
     setSelectedAvatar: newSelectedPhoto => set(() => ({selectedAvatar: newSelectedPhoto})),
     setPreviewURLAvatar: newPreviewURL => set(() => ({previewURLAvatar: newPreviewURL})),
+    setAnotherUser: newAnotherUser => set( () => ({anotherUser: newAnotherUser}) ),
 
     handleUser: (e) => {
         const name = e.target.name
@@ -102,9 +111,7 @@ export const useUserStore = create((set, get) => ({
             await axios.get('http://localhost:8000/sanctum/csrf-cookie')
             const res = await axios.post('http://localhost:8000/api/login', dataToSend)
             const avatarURL = res.data.data.avatar ? "http://localhost:8000/storage/" + res.data.data.avatar : null
-            console.log(avatarURL);
 
-            console.log(JSON.stringify(res.data.data));
             get().setUser({...res.data.data, ['avatar']: avatarURL})
             get().navigate(ROUTES.POST_INDEX)
         }
@@ -195,4 +202,62 @@ export const useUserStore = create((set, get) => ({
         }
 
     },
+
+    getUser: async (userId) => {
+        try{
+            const res = await axios
+                .get(`http://localhost:8000/api/users/${userId}`)
+
+            const newUser = res.data
+
+            get().setAnotherUser(
+                {
+                    id: newUser.id,
+                    name: newUser.name,
+                    avatar: newUser.avatar,
+                },
+            )
+        }catch (e) {
+            console.log(e)
+        }
+    },
+
+    banUser: async (userId) => {
+        try{
+            const res = await axios
+                .put(`http://localhost:8000/api/users/${userId}/ban`)
+
+            console.log(res.data.data)
+        }catch (e){
+            console.log(e)
+        }
+    },
+
+    deleteUser: async (userId) => {
+        try{
+            let res;
+            if(!confirm('Are you sure about it?')) return;
+
+            res = await axios
+                .delete(`http://localhost:8000/api/users/${userId}`)
+
+            get().setUser({
+                id: '',
+                name: '',
+                email: '',
+                avatar: '',
+                isAdmin: '',
+                can: {
+                    create: false,
+                    delete: false,
+                    update: false,
+                    sendComment: false
+                }
+            })
+
+            console.log(res.data.data);
+        }catch (e) {
+            throw e
+        }
+    }
 }))

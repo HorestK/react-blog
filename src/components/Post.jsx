@@ -11,10 +11,19 @@ export default function ({post, page}) {
 
     return post === undefined ? false : (
         <div className='w-full border border-gray-300 py-2 px-4 mb-4'>
+            <Link to={`/users/${post.user_id}`}>
+                <div>
+                    <img
+                        src={post.userAvatar ? 'http://localhost:8000/storage/' + post.userAvatar : '../src/assets/default-avatar.png'}
+                        className='w-[40px] h-[40px] inline-block mr-3 rounded-3xl'
+                    />
+                    <h2 className='text-xl mb-2 inline-block'>{post.user_name}</h2>
+                </div>
+            </Link>
+
             <Link className='lg:w-1/2 lg:mx-auto lg:block'
                   to={`/posts/${post.id}` + `?previous_page=${page}`}>
                 <div>
-                    <h2 className='text-xl mb-2'>{post.user_name}</h2>
                     {post.photo && <img src={post.photo}
                                         className='mb-2'
                     />}
@@ -50,5 +59,5 @@ export default function ({post, page}) {
                 </div>
             </div>
         </div>
-)
+    )
 }
