@@ -17,7 +17,6 @@ export default function Profile(){
 
     useEffect(() => {
         getUser(id)
-        console.log(user);
     }, []);
 
     return(

@@ -4,8 +4,6 @@ import {usePostStore} from "../Store/postStore.js";
 import {useUserStore} from "../Store/userStore.js";
 
 export default function UploadImages({isAvatar = false, currentAvatar = null, imageInputRef}){
-    // const [previewURL, setPreviewURL] = useState()
-    // const [selectedPhoto, setSelectedPhoto] = useState()
     const [photoIsClicked, setPhotoIsClicked] = useState(false)
     const {
         handlePhoto,
@@ -15,21 +13,8 @@ export default function UploadImages({isAvatar = false, currentAvatar = null, im
         handleAvatar,
         previewURLAvatar
     } = useUserStore()
-    //
-    // const handlePhoto = (e) => {
-    //     const file = e.target.files[0]
-    //     setSelectedPhoto(file)
-    //
-    //     const photoURL = URL.createObjectURL(file)
-    //     setPreviewURL(photoURL)
-    //     console.log(file);
-    // }
 
     const [picture, setPicture] = useState(currentAvatar ? currentAvatar : (isAvatar ? previewURLAvatar : previewURL))
-
-    useEffect(() => {
-        console.log(currentAvatar);
-    }, []);
 
     return (
         <div className=''>
@@ -53,7 +38,6 @@ export default function UploadImages({isAvatar = false, currentAvatar = null, im
             {(picture || currentAvatar) && <img src={picture}
                  className='w-[125px] h-[75px] border-4 border-gray-600 rounded-[10%] mt-4 mb-2'
                  onClick={()=>{
-                     console.log('photo')
                      setPhotoIsClicked(true)
                  }}
             >

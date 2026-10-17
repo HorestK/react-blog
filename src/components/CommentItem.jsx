@@ -141,7 +141,6 @@ export default function CommentItem({newComment, postId}){
         <button
             className='cursor-pointer px-2 py-1 bg-sky-600 text-white relative left-[87%] mb-3'
             onClick={async () => {
-                console.log(isRepliedMode)
                 if (isRepliedMode) setIsRepliedMode(false)
                 else setIsRepliedMode(true)
             }}

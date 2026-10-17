@@ -5,7 +5,7 @@ import UploadImages from "../../components/UploadImages.jsx";
 import {useEffect, useRef, useState} from "react";
 import axios from "../../axios.js";
 
-export default function Edit(){
+export default function Edit() {
     const {
         handleUser,
         updateUser,
@@ -17,40 +17,17 @@ export default function Edit(){
     const {id} = useParams()
     const [imageFile, setImageFile] = useState()
     const imageInputRef = new useRef(null)
+    const [needToDeleteAvatar, setNeedToDeleteAvatar] = useState(false)
 
-    // useEffect( () => {
-    //     console.log(user);
-    //
-    //     const getImageFile = async () => {
-    //         const url = user.avatar.replace('/storage/', '/api/')
-    //         console.log(url)
-    //         const response = await fetch(url)
-    //         const blob = await response.blob()
-    //         const fileName = url.split('/').pop()
-    //
-    //         const file = new File([blob], fileName, {type: blob.type})
-    //
-    //         const dataTransfer = new DataTransfer()
-    //         dataTransfer.items.add(file)
-    //
-    //         if(imageInputRef.current){
-    //             imageInputRef.current.files = dataTransfer.files
-    //
-    //             const file = imageInputRef.files[0]
-    //             setSelectedAvatar(file)
-    //             console.log("File has been pasted");
-    //         }
-    //         else console.log("File hasn't been pasted");
-    //
-    //     }
-    //
-    //     getImageFile()
-    // }, [])
+    //Чтобы удалить картинку нужно подать знак
+    //При отправке пустого файла аватарка сохраняется
+    //Дадим ключевое слово для бэкэнда
+    //При определении этого слова изображение удаляется
 
     return (
         <form className='border border-gray-400 flex flex-wrap p-5 gap-3 lg:w-1/2 lg:mx-auto relative'
               onSubmit={(e) => {
-                  updateUser(e, id)
+                  updateUser(e, id, needToDeleteAvatar)
               }}
         >
             <h1 className='text-2xl font-bold mb-4'>Edit</h1>
@@ -63,19 +40,25 @@ export default function Edit(){
                        handleUser(e)
                    }}
                    name='name'/>
-            {/*<input type='email'*/}
-            {/*       placeholder='Email'*/}
-            {/*       className='border border-gray-300 rounded-xl w-1/1 p-2 mb-2'*/}
-            {/*       autoComplete='email'*/}
-            {/*       value={user.email}*/}
-            {/*       onChange={(e) => {*/}
-            {/*           handleUser(e)*/}
-            {/*       }}*/}
-            {/*       name='email'/>*/}
-            <UploadImages isAvatar={true}
+            {!needToDeleteAvatar && <UploadImages isAvatar={true}
                           currentAvatar={user.avatar}
                           imageInputRef={imageInputRef}
-            />
+            />}
+            {(user.avatar && !needToDeleteAvatar) && <div className='flex items-center'>
+                <a className='bg-red-600
+                               text-white
+                               p-2
+                               cursor-pointer
+                               h-10'
+
+                   onClick={(e) => {
+                       e.preventDefault()
+                       if(confirm('Are you sure about it?')) setNeedToDeleteAvatar(true)
+                   }}
+                   href='#'
+                >Delete
+                </a>
+            </div>}
             <input type='password'
                    placeholder='New password'
                    className='border border-gray-300 rounded-xl w-1/1 p-2'

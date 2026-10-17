@@ -2,6 +2,7 @@ import {create} from 'zustand'
 import {ROUTES} from "../routes/Routes.js";
 import axios from "../axios.js";
 import {isAxiosError} from "axios";
+import {data} from "react-router-dom";
 
 export const useUserStore = create((set, get) => ({
     user: {
@@ -159,11 +160,11 @@ export const useUserStore = create((set, get) => ({
         console.log(file);
     },
 
-    updateUser: async (e, userId) => {
+    updateUser: async (e, userId, needToDeleteAvatar) => {
         e.preventDefault()
 
         let newErrors = []
-        const dataToSend = {
+        let dataToSend = {
             name: get().user.name,
             email: get().user.email,
             password: get().user.password,
@@ -171,7 +172,7 @@ export const useUserStore = create((set, get) => ({
             avatar: get().selectedAvatar
         }
 
-        console.log(dataToSend)
+        if(needToDeleteAvatar) dataToSend.needToDeleteAvatar = true
 
         let formData = new FormData()
         formData.append('name', dataToSend.name)
@@ -179,6 +180,7 @@ export const useUserStore = create((set, get) => ({
         formData.append('password', dataToSend.password)
         formData.append('password_confirmation', dataToSend.password_confirmation)
         formData.append('avatar', dataToSend.avatar)
+        formData.append('needToDeleteAvatar', dataToSend.needToDeleteAvatar ?? false)
 
         try{
             axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
@@ -187,7 +189,7 @@ export const useUserStore = create((set, get) => ({
             const res = await axios.put(`http://localhost:8000/api/users/${userId}`, formData)
 
             get().setUser(res.data.data)
-            get().navigate(ROUTES.USER_PROFILE)
+            get().navigate(`/users/${get().user.id}`)
         }
         catch (error){
             if(isAxiosError(error)) {
@@ -195,10 +197,13 @@ export const useUserStore = create((set, get) => ({
                 get().setErrors(newErrors)
                 return
             }
-            for(let [key, value] of Object.entries(error.response.data.errors)){
-                newErrors.push({name: key, body: value[0]})
+
+            if(error.response) {
+                for (let [key, value] of Object.entries(error.response.data.errors)) {
+                    newErrors.push({name: key, body: value[0]})
+                }
+                get().setErrors(newErrors)
             }
-            get().setErrors(newErrors)
         }
 
     },
