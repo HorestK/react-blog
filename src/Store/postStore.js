@@ -107,7 +107,7 @@ export const usePostStore = create((set, get) => ({
             get().setErrors(newErrors)
         }
 
-        // get().setPosts([...get().posts, get().post])
+        // get().setPosts([...get().post, get().post])
     },
     updatePost: async (e, postId, setError) => {
         e.preventDefault()

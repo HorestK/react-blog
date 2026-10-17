@@ -1,12 +1,12 @@
-import Post from "../../components/Post.jsx";
+import Post from "../../components/post/PostItem.jsx";
 import {usePostStore} from "../../Store/postStore.js";
 import {useEffect, useState} from "react";
 import {useParams, useNavigate, generatePath, Link, useSearchParams} from "react-router-dom";
 import {ROUTES} from "../../routes/Routes.js";
 import {useUserStore} from "../../Store/userStore.js";
-import PageNotFoundError from "../../components/PageNotFoundError.jsx";
+import PageNotFoundError from "../../components/feedback/PageNotFoundError.jsx";
 import {useCommentStore} from "../../Store/commentStore.js";
-import CommentItem from "../../components/CommentItem.jsx";
+import CommentItem from "../../components/comment/CommentItem.jsx";
 
 export default function Show() {
     const {post, getPost, deletePost} = usePostStore()

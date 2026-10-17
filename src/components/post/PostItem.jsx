@@ -1,11 +1,11 @@
-import Tag from "./Tag.jsx";
+import Tag from "../ui/Tag.jsx";
 import {useEffect} from "react";
-import {usePostStore} from "../Store/postStore.js";
-import {useUserStore} from "../Store/userStore.js";
+import {usePostStore} from "../../Store/postStore.js";
+import {useUserStore} from "../../Store/userStore.js";
 import {generatePath, Link} from "react-router-dom";
-import {ROUTES} from "../routes/Routes.js";
+import {ROUTES} from "../../routes/Routes.js";
 
-export default function ({post, page}) {
+export default function PostItem({post, page}) {
     const {setReaction} = usePostStore()
     const {user} = useUserStore()
 

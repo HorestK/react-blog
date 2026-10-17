@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
-import {useCommentStore} from "../Store/commentStore.js";
+import {useCommentStore} from "../../Store/commentStore.js";
 import {useSearchParams} from "react-router-dom";
-import {useUserStore} from "../Store/userStore.js";
-import {useSubCommentStore} from "../Store/subcommentStore.js";
+import {useUserStore} from "../../Store/userStore.js";
+import {useSubCommentStore} from "../../Store/subcommentStore.js";
 
 export default function SubcommentItem({subComment, commentId, subcommentsCount, setSubcommentsCount, page, setPage}) {
     const [isEdit, setIsEdit] = useState(false)

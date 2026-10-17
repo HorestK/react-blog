@@ -5,19 +5,19 @@ import {
     Route
 } from "react-router-dom";
 import {useState} from "react";
-import NavMenu from "./components/pages/main/NavMenu.jsx";
-import MenuButton from "./components/pages/main/MenuButton.jsx";
+import NavMenu from "./components/layout/navigation/NavMenu.jsx";
+import MenuButton from "./components/layout/navigation/MenuButton.jsx";
 import Main from "./pages/post/Main.jsx";
 import {ROUTES} from "./routes/Routes.js";
 import Create from "./pages/post/Create.jsx";
 import Index from "./pages/post/Index.jsx";
 import Show from "./pages/post/Show.jsx";
 import Edit from "./pages/post/Edit.jsx";
-import NavigationInitializer from "./components/NavigationInitializer.jsx";
-import Register from "./pages/user/Register.jsx";
-import Login from "./pages/user/Login.jsx";
-import SearсhButton from "./components/pages/main/SearchButton.jsx";
-import SearchMenu from "./components/pages/main/SearchMenu.jsx";
+import NavigationInitializer from "./providers/NavigationInitializer.jsx";
+import Register from "./pages/auth/Register.jsx";
+import Login from "./pages/auth/Login.jsx";
+import SearсhButton from "./components/layout/search/SearchButton.jsx";
+import SearchMenu from "./components/layout/search/SearchMenu.jsx";
 import Profile from "./pages/user/Profile.jsx";
 import UserEdit from "./pages/user/Edit.jsx";
 
@@ -37,9 +37,6 @@ function App() {
         if (isMenu) setIsMenu(false)
     }
 
-
-    //реализовали открытие и закрытие меню
-    //не забываем реализовать закрытие прошлого меню если оно открыто
     const showSearchMenu = function () {
         if (!isSearchMenu) {
             setIsMenu(false)

@@ -1,7 +1,7 @@
 import {useEffect, useState, useRef} from "react";
-import PhotoView from "./PhotoView.jsx";
-import {usePostStore} from "../Store/postStore.js";
-import {useUserStore} from "../Store/userStore.js";
+import PhotoView from "../ui/PhotoView.jsx";
+import {usePostStore} from "../../Store/postStore.js";
+import {useUserStore} from "../../Store/userStore.js";
 
 export default function UploadImages({isAvatar = false, currentAvatar = null, imageInputRef}){
     const [photoIsClicked, setPhotoIsClicked] = useState(false)

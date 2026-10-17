@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
-import {useCommentStore} from "../Store/commentStore.js";
+import {useCommentStore} from "../../Store/commentStore.js";
 import {Link, useSearchParams} from "react-router-dom";
 import SubcommentItem from "./SubcommentItem.jsx";
-import {useUserStore} from "../Store/userStore.js";
-import {useSubCommentStore} from "../Store/subcommentStore.js";
-import axios from "../axios.js";
+import {useUserStore} from "../../Store/userStore.js";
+import {useSubCommentStore} from "../../Store/subcommentStore.js";
+import axios from "../../axios.js";
 
 export default function CommentItem({newComment, postId}){
     const [isEdit, setIsEdit] = useState(false)

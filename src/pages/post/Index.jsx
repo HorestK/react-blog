@@ -1,10 +1,10 @@
 import {usePostStore} from "../../Store/postStore.js";
 import {useEffect, useState} from "react";
-import Post from "../../components/Post.jsx";
+import Post from "../../components/post/PostItem.jsx";
 import {generatePath, Link, useSearchParams} from "react-router-dom";
 import {ROUTES} from "../../routes/Routes.js";
-import ServerError from "../../components/ServerError.jsx";
-import PostsNotFound from "../../components/PostsNotFound.jsx";
+import ServerError from "../../components/feedback/ServerError.jsx";
+import PostsNotFound from "../../components/feedback/PostsNotFound.jsx";
 
 export default function Index() {
     const {posts, getPosts, postsMeta} = usePostStore()

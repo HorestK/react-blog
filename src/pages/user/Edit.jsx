@@ -1,7 +1,7 @@
 import {useUserStore} from "../../Store/userStore.js";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate, useParams} from "react-router-dom";
-import UploadImages from "../../components/UploadImages.jsx";
+import UploadImages from "../../components/post/UploadImages.jsx";
 import {useEffect, useRef, useState} from "react";
 import axios from "../../axios.js";
 

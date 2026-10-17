@@ -3,9 +3,9 @@ import {usePostStore} from "../../../Store/postStore.js";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useCategoryStore} from "../../../Store/categoryStore.js";
 import {useEffect, useState} from "react";
-import ServerError from "../../ServerError.jsx";
+import ServerError from "../../feedback/ServerError.jsx";
 import {ROUTES} from "../../../routes/Routes.js";
-import Tag from "../../Tag.jsx";
+import Tag from "../../ui/Tag.jsx";
 
 export default function SearchMenu({closeMenu}){
     const {

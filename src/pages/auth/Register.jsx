@@ -1,36 +1,52 @@
 import {useUserStore} from "../../Store/userStore.js";
-import {useState} from "react";
-import ServerError from "../../components/ServerError.jsx";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";
+import UploadImages from "../../components/post/UploadImages.jsx";
 
-export default function Login(){
-    const {logUser, errors, handleUser} = useUserStore()
+export default function Register(){
+    const {handleUser, regUser, errors} = useUserStore()
     const navigate = useNavigate()
 
     return (
         <form className='border border-gray-400 flex flex-wrap p-5 gap-3 lg:w-1/2 lg:mx-auto relative'
               onSubmit={(e) => {
-                  logUser(e)
+                  regUser(e)
               }}
         >
-            <h1 className='text-2xl font-bold mb-4'>Login</h1>
+            <h1 className='text-2xl font-bold mb-4'>Register</h1>
+            <input type='text'
+                   placeholder='Name'
+                   className='border border-gray-300 rounded-xl w-1/1 p-2'
+                   autoComplete='username'
+                   onChange={(e) => {
+                       handleUser(e)
+                   }}
+                   name='name'/>
             <input type='email'
                    placeholder='Email'
-                   className='border border-gray-300 rounded-xl w-1/1 p-2'
+                   className='border border-gray-300 rounded-xl w-1/1 p-2 mb-2'
                    autoComplete='email'
                    onChange={(e) => {
                        handleUser(e)
                    }}
                    name='email'/>
+            <UploadImages isAvatar={true}/>
             <input type='password'
                    placeholder='Password'
-                   className='border border-gray-300 rounded-xl w-1/1 p-2 mb-4'
-                   autoComplete='current-password'
+                   className='border border-gray-300 rounded-xl w-1/1 p-2'
+                   autoComplete='new-password'
                    onChange={(e) => {
                        handleUser(e)
                    }}
                    name='password'/>
+            <input type='password'
+                   placeholder='Password confirmation'
+                   className='border border-gray-300 rounded-xl w-1/1 p-2 mb-4'
+                   autoComplete='new-password'
+                   onChange={(e) => {
+                       handleUser(e)
+                   }}
+                   name='password_confirmation'/>
             {errors.length > 0 &&
                 <div className='flex flex-wrap w-1/1 mb-2'>
                     {errors.map((e, i) => (
@@ -39,7 +55,7 @@ export default function Login(){
                 </div>
             }
             <input type='submit'
-                   value='Login'
+                   value='Register'
                    className='bg-sky-600 text-white p-2 cursor-pointer'/>
             <a
                 className='cursor-pointer px-4 py-2 bg-sky-600 text-white absolute right-5 bottom-5'
@@ -47,7 +63,6 @@ export default function Login(){
             >
                 Back
             </a>
-
         </form>
     )
 }
