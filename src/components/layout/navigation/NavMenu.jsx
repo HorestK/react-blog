@@ -1,46 +1,28 @@
-import {generatePath, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {ROUTES} from "../../../routes/Routes.js";
 import MenuItem from "./MenuItem.jsx";
-import {useUserStore} from "../../../Store/userStore.js";
+import {useUserStore} from "../../../store/userStore.js";
+import AuthorizedLinks from "./AuthorizedLinks.jsx";
+import GuestLinks from "./GuestLinks.jsx";
 
-export default function NavMenu({closeMenu}) {
+export default function NavMenu({closeAll}) {
     const {user, logoutUser} = useUserStore()
 
-    return (
-        <nav className='fixed left-0 lg:left-[80%] top-20 w-full'>
+    const isAutheficated = Boolean(user?.id)
 
-            {/*<Link to={ROUTES.MAIN_INDEX} onClick={() => {closeMenu()}}>*/}
-            {/*    <MenuItem name='Home'/>*/}
-            {/*</Link>*/}
-            {user.can.create &&
-                <>
-                    <Link to={generatePath(ROUTES.USER_PROFILE, {id: user.id})} onClick={() => {closeMenu()}}>
-                        <MenuItem name='Profile'/>
-                    </Link>
-                    <Link to={ROUTES.POST_CREATE} onClick={() => {closeMenu()}}>
-                        <MenuItem name='Create'/>
-                    </Link>
-                    <a className='' onClick={() => {
-                        closeMenu()
-                        logoutUser()
-                    }}>
-                        <MenuItem name='Logout'/>
-                    </a>
-                </>
+    return (
+        <nav className='fixed left-0 lg:left-auto lg:right-0 top-20 w-full lg:w-56'
+             onClick={closeAll}
+        >
+            {isAutheficated
+                ? <AuthorizedLinks userId={user.id}
+                                   handleLogout={logoutUser}
+                />
+                : <GuestLinks/>
             }
-            <Link to={ROUTES.POST_INDEX + '?page=1'} onClick={() => {closeMenu()}}>
+            <Link to={ROUTES.POST_INDEX + '?page=1'}>
                 <MenuItem name='Posts'/>
             </Link>
-            {user.can.create ||
-                <>
-                    <Link to={ROUTES.USER_REGISTER} onClick={() => {closeMenu()}}>
-                        <MenuItem name='Register'/>
-                    </Link>
-                    <Link to={ROUTES.USER_LOGIN} onClick={() => {closeMenu()}}>
-                        <MenuItem name='Login'/>
-                    </Link>
-                </>
-            }
         </nav>
     )
 }

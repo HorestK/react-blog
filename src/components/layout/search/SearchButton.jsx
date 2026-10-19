@@ -1,20 +1,9 @@
-export default function SearсhButton({showMenu}){
+export default function SearchButton({toggleSearch}){
     return (
-        <button className='text-6xl text-white cursor-pointer lg:mr-4' onClick={() => {
-            showMenu()
-        }}>
+        <button type='button'
+                className='text-6xl text-white cursor-pointer lg:mr-4'
+                onClick={toggleSearch}>
             🔎
         </button>
     )
 }
-
-/*
-Как мы можем реализовать поиск?
-
-Если я хочу чтобы он был детальным нам нужно много места для ег реализации.
-Лучше всего открывать отдельную страничку или закрывать половину экрана пользователя.
-Логичнее будет сделать второй вариант так как пользователь может передумать искать, а значит если
-будет отдельная страничка то будет делаться лишний запрос на получение постов.
-
-Так что выбор очевиден.
- */

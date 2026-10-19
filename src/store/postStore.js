@@ -220,35 +220,23 @@ export const usePostStore = create((set, get) => ({
         get().setTag({name: name})
     },
 
-    storeTag: (e, searchParams = null, setSearchParams = null, isFilter = false) => {
-        e.preventDefault()
-
+    storeTag: () => {
         const tagName = get().tag.name
 
-        if(isFilter){
-            searchParams.append('tags', tagName)
-            setSearchParams(searchParams)
-        }
+        if(!get().tags
+            .some(t => t.name === tagName) && tagName !== '')
+            get().setTags([...get().tags, get().tag])
 
-        if(!get().tags.some(t => t.name === tagName) && tagName !== '') get().setTags([...get().tags, get().tag])
         get().setTag({
             name: '',
         },)
     },
 
-    deleteTag: (e, newSearchParams = null, setSearchParams = null, isFilter = false) => {
-        e.preventDefault()
-        const tagName = get().tag.name
+    deleteTag: (tagNameToDelete) => {
+        // const tagName = get().tag.name
 
-        if(isFilter){
-            newSearchParams.delete('tags', tagName)
-            setSearchParams(newSearchParams)
-        }
-
-        get().setTags(get().tags.filter((t) => t.name !== tagName))
-        get().setTag({
-            name: '',
-        },)
+        get().setTags(get().tags.filter((t) => t.name !== tagNameToDelete))
+        //сделать удаление по клику
     },
 
     handlePhoto: (e, setPicture) => {

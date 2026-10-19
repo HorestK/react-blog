@@ -1,4 +1,4 @@
-import {usePostStore} from "../../Store/postStore.js";
+import {usePostStore} from "../../store/postStore.js";
 import {useEffect, useState} from "react";
 import Post from "../../components/post/PostItem.jsx";
 import {generatePath, Link, useSearchParams} from "react-router-dom";

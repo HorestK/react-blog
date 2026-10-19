@@ -1,7 +1,7 @@
 import Tag from "../ui/Tag.jsx";
 import {useEffect} from "react";
-import {usePostStore} from "../../Store/postStore.js";
-import {useUserStore} from "../../Store/userStore.js";
+import {usePostStore} from "../../store/postStore.js";
+import {useUserStore} from "../../store/userStore.js";
 import {generatePath, Link} from "react-router-dom";
 import {ROUTES} from "../../routes/Routes.js";
 

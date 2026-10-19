@@ -1,8 +1,8 @@
-import {usePostStore} from "../../Store/postStore.js";
+import {usePostStore} from "../../store/postStore.js";
 import Tag from "../../components/ui/Tag.jsx";
 import {useEffect, useState} from "react";
-import {useCategoryStore} from "../../Store/categoryStore.js";
-import {useUserStore} from "../../Store/userStore.js";
+import {useCategoryStore} from "../../store/categoryStore.js";
+import {useUserStore} from "../../store/userStore.js";
 import ServerError from "../../components/feedback/ServerError.jsx";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";

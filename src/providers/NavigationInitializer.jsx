@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router-dom";
-import {usePostStore} from "../Store/postStore.js";
+import {usePostStore} from "../store/postStore.js";
 import {useEffect} from "react";
-import {useUserStore} from "../Store/userStore.js";
+import {useUserStore} from "../store/userStore.js";
 
 
 export default function NavigationInitializer(){

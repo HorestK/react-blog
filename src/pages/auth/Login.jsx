@@ -1,4 +1,4 @@
-import {useUserStore} from "../../Store/userStore.js";
+import {useUserStore} from "../../store/userStore.js";
 import {useState} from "react";
 import ServerError from "../../components/feedback/ServerError.jsx";
 import {ROUTES} from "../../routes/Routes.js";

@@ -1,4 +1,4 @@
-import {useUserStore} from "../../Store/userStore.js";
+import {useUserStore} from "../../store/userStore.js";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";
 import UploadImages from "../../components/post/UploadImages.jsx";

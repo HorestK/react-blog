@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
-import {useCommentStore} from "../../Store/commentStore.js";
+import {useCommentStore} from "../../store/commentStore.js";
 import {Link, useSearchParams} from "react-router-dom";
 import SubcommentItem from "./SubcommentItem.jsx";
-import {useUserStore} from "../../Store/userStore.js";
-import {useSubCommentStore} from "../../Store/subcommentStore.js";
+import {useUserStore} from "../../store/userStore.js";
+import {useSubCommentStore} from "../../store/subcommentStore.js";
 import axios from "../../axios.js";
 
 export default function CommentItem({newComment, postId}){

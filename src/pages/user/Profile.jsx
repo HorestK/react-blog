@@ -1,4 +1,4 @@
-import {useUserStore} from "../../Store/userStore.js";
+import {useUserStore} from "../../store/userStore.js";
 import {useEffect} from "react";
 import {generatePath, Link, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {ROUTES} from "../../routes/Routes.js";

@@ -1,13 +1,5 @@
 import './App.css'
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route
-} from "react-router-dom";
-import {useState} from "react";
-import NavMenu from "./components/layout/navigation/NavMenu.jsx";
-import MenuButton from "./components/layout/navigation/MenuButton.jsx";
-import Main from "./pages/post/Main.jsx";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import {ROUTES} from "./routes/Routes.js";
 import Create from "./pages/post/Create.jsx";
 import Index from "./pages/post/Index.jsx";
@@ -16,58 +8,20 @@ import Edit from "./pages/post/Edit.jsx";
 import NavigationInitializer from "./providers/NavigationInitializer.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Login from "./pages/auth/Login.jsx";
-import SearсhButton from "./components/layout/search/SearchButton.jsx";
-import SearchMenu from "./components/layout/search/SearchMenu.jsx";
 import Profile from "./pages/user/Profile.jsx";
 import UserEdit from "./pages/user/Edit.jsx";
+import Header from "./components/layout/Header.jsx";
+import Home from "./pages/Home.jsx";
+import PageNotFoundError from "./components/feedback/PageNotFoundError.jsx";
 
 function App() {
-    const [isMenu, setIsMenu] = useState(false)
-    const [isSearchMenu, setIsSearchMenu] = useState(false)
-
-    const showHamburgerMenu = function () {
-        if (!isMenu) {
-            setIsSearchMenu(false)
-            setIsMenu(true)
-        }
-        else setIsMenu(false)
-    }
-
-    const closeHamburgerMenu = function () {
-        if (isMenu) setIsMenu(false)
-    }
-
-    const showSearchMenu = function () {
-        if (!isSearchMenu) {
-            setIsMenu(false)
-            setIsSearchMenu(true)
-        }
-        else setIsSearchMenu(false)
-    }
-
-    const closeSearchMenu = function () {
-        if (isSearchMenu) setIsSearchMenu(false)
-    }
-
     return (
         <Router>
             <NavigationInitializer/>
-            <header className='flex justify-between bg-gray-500 min-h-20 px-4 fixed left-0 top-0 w-1/1 z-50'>
-                <span className='text-white text-2xl flex items-center'>BLOG FOR EVERYTHING</span>
-                <div className='pt-2'>
-                    <SearсhButton showMenu={() => {
-                        showSearchMenu()
-                    }}/>
-                    <MenuButton showMenu={() => {
-                        showHamburgerMenu()
-                    }}/>
-                </div>
-                {isMenu && <NavMenu closeMenu={() => {closeHamburgerMenu()}}/>}
-                {isSearchMenu && <SearchMenu closeMenu={() => {closeSearchMenu()}}/>}
-            </header>
+            <Header/>
             <main className='px-4 py-2 mt-20'>
                 <Routes>
-                    <Route path={ROUTES.MAIN_INDEX} element={<Main/>}/>
+                    <Route path={ROUTES.MAIN_INDEX} element={<Home/>}/>
                     <Route path={ROUTES.POST_INDEX} element={<Index/>}/>
                     <Route path={ROUTES.POST_CREATE} element={<Create/>}/>
 
@@ -78,6 +32,8 @@ function App() {
                     <Route path={ROUTES.USER_LOGIN} element={<Login/>}/>
                     <Route path={ROUTES.USER_PROFILE} element={<Profile/>}/>
                     <Route path={ROUTES.USER_EDIT} element={<UserEdit/>}/>
+
+                    <Route path='*' element={<PageNotFoundError/>}/>
                 </Routes>
             </main>
         </Router>
