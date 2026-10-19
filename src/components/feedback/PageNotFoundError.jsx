@@ -1,4 +1,4 @@
-import {ROUTES} from "../routes/Routes.js";
+import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";
 
 export default function PageNotFoundError(){

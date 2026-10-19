@@ -1,9 +1,9 @@
 import {usePostStore} from "../../Store/postStore.js";
-import Tag from "../../components/Tag.jsx";
+import Tag from "../../components/ui/Tag.jsx";
 import {useEffect, useState} from "react";
 import {useCategoryStore} from "../../Store/categoryStore.js";
 import {useParams} from "react-router-dom";
-import ServerError from "../../components/ServerError.jsx";
+import ServerError from "../../components/feedback/ServerError.jsx";
 import {ROUTES} from "../../routes/Routes.js";
 
 export default function Edit() {
