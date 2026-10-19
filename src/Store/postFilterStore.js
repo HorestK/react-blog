@@ -31,7 +31,7 @@ export const usePostFilterStore = create( (set, get) => ({
 
         Object.entries(newParams).forEach( ([key, value]) => {
             if(value === '' || value === null || value === undefined) currentSearchParams.delete(key)
-            else if(key !== 'category_id') currentSearchParams.set(key, value)
+            else currentSearchParams.set(key, value)
         })
 
         setSearchParams(currentSearchParams)

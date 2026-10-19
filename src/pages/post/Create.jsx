@@ -1,12 +1,11 @@
 import {usePostStore} from "../../Store/postStore.js";
-import Tag from "../../components/ui/Tag.jsx";
+import Tag from "../../components/Tag.jsx";
 import {useEffect, useState} from "react";
 import {useCategoryStore} from "../../Store/categoryStore.js";
 import {useUserStore} from "../../Store/userStore.js";
-import ServerError from "../../components/feedback/ServerError.jsx";
+import ServerError from "../../components/ServerError.jsx";
 import {ROUTES} from "../../routes/Routes.js";
 import {useNavigate} from "react-router-dom";
-import UploadImages from "../../components/post/UploadImages.jsx";
 
 export default function Create() {
     const {
@@ -88,7 +87,6 @@ export default function Create() {
                     ))}
                 </select>
             </div>
-            <UploadImages/>
             <div className='w-1/1'>
                 <div>
                     <input type='text'
